@@ -45,8 +45,38 @@ languageRouter
 
 languageRouter
   .get('/head', async (req, res, next) => {
-    // implement me
-    res.send('implement me!')
+    // get next word from the database
+    try {
+      const word = await LanguageService.getNextWord(
+          req.app.get('db')
+      )
+      const scores = await LanguageService.getTotalScore(
+        req.app.get('db'),
+        req.language.id
+      )
+
+      const totalScore = scores
+        .reduce((acc, score) => {
+          return acc + score.correct_count
+      }, 0)
+
+      res.json({
+        "nextWord": word[0].original,
+        "wordCorrectCount": word[0].correct_count,
+        "wordIncorrectCount": word[0].incorrect_count,
+        "totalScore": totalScore
+      })
+      /* /head expected return
+          {
+          "nextWord": "Testnextword",
+          "wordCorrectCount": 222,
+          "wordIncorrectCount": 333,
+          "totalScore": 999
+          }
+      */
+    } catch (error) {
+      next(error)
+    }
   })
 
 languageRouter

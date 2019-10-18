@@ -7,8 +7,7 @@ CREATE TABLE "word" (
   "incorrect_count" SMALLINT DEFAULT 0,
   "language_id" INTEGER REFERENCES "language"(id)
     ON DELETE CASCADE NOT NULL,
-  "next" INTEGER REFERENCES "word"(id)
-    ON DELETE SET NULL
+  "next" INTEGER
 );
 
 ALTER TABLE "language"

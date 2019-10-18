@@ -2,8 +2,8 @@
 
 class _Node {
     constructor(value, next) {
-        this.value = value;
-        this.next= next;
+        this.value=value,
+        this.next=next;
     }
 }
 
@@ -11,126 +11,176 @@ class LinkedList {
     constructor() {
         this.head = null;
     }
-    insertFirst(item) {
-        this.head=new _Node(item, this.head);
+
+    insertFirst(item){
+        this.head = new _Node(item, this.head);
     }
-    insertLast(item) {
-        if (this.head === null) {
+
+    insertLast(item){
+        if(this.head === null){
             this.insertFirst(item);
-            return;
         }
+        else{
+            let tempNode = this.head;
+            while(tempNode.next !== null){
+                tempNode = tempNode.next;
+            }
+            tempNode.next = new _Node(item, null);
+        }
+    }
+    /**Inserts a new node after a node containing the key.*/
+    insertAfter(key, itemToInsert){
         let tempNode = this.head;
-        while (tempNode.next !== null) {
+        while(tempNode !== null && tempNode.value !== key){
             tempNode = tempNode.next;
-        }
-        tempNode.next = new _Node(item, null);
+        } 
+        if(tempNode !== null){
+            tempNode.next = new _Node(itemToInsert, tempNode.next);
+        }  
     }
-    insertBefore(item, before) {
-        //Special Case if inserting before the head
-        if(before === this.head.value) {
-            const beforeNode = new _Node(item, this.head);
-            this.head = beforeNode;
+    /* Inserts a new node before a node containing the key.*/
+    insertBefore(key, itemToInsert){
+        if(this.head === null){
             return;
         }
-        //start at the head of LL
+        if(this.head.value === key){
+            this.insertFirst(itemToInsert);
+            return;
+        }
+        let prevNode = null;
         let currNode = this.head;
-
-        //If the LL is empty, return null
-        if(!this.head) {
-            return null;
+        while(currNode !== null && currNode.value !== key){
+            prevNode = currNode;
+            currNode = currNode.next;
         }
-
-        //loop through nodes in LL
-        while(currNode.value !== before) {
-            //check if at the end of the list, if so return null
-            if(currNode.next === null) {
-                return null;
-            }
-            else if(currNode.next.value === before) {
-                //insert new item
-                const beforeNode = new _Node(item, currNode.next);
-                currNode.next = beforeNode;
-                return;
-            }
-            else {
-                //otherwise update to next node
-                currNode = currNode.next;
-            }
-        }
-        return null;
-    }
-    insertAfter(item, after) {
-        const currNode = this.find(after);
-        const afterNode = new _Node(item, currNode.next);
-        currNode.next = afterNode;
-        return;
-
-    }
-    insertAt(item, index, counter = 0, currNode = this.head) {
-        // if at head
-        if(index === 0) {
-            const newNode = new _Node(item, this.head);
-            this.head = newNode;
+        if(currNode === null){
+            console.log('Node not found to insert');
             return;
         }
-        if(counter === index - 1) {
-            currNode.next = new _Node(item, currNode.next);
-            return;
+        //insert between current and previous
+        prevNode.next = new _Node(itemToInsert, currNode);
+    }
+    insertAt(nthPosition, itemToInsert) {
+        if (nthPosition < 0) {
+            throw new Error('Position error');
         }
-        else {
-            this.insertAt(item, index, counter + 1, currNode.next);
+        if (nthPosition === 0) {
+            this.insertFirst(itemToInsert);
+        }else {
+            // Find the node which we want to insert after
+            const node = this._findNthElement(nthPosition - 1);
+            const newNode = new _Node(itemToInsert, null);
+            newNode.next = node.next; 
+            node.next = newNode;
         }
     }
-    remove(item) {
-        if (!this.head) {
+    _findNthElement(position) {
+        let node = this.head;
+        for (let i=0; i<position; i++) {
+            node = node.next;
+        }
+        return node;
+    }
+    remove(item){ 
+        //if the list is empty
+        if (!this.head){
             return null;
         }
-        if (this.head.value === item) {
+        //if the node to be removed is head, make the next node head
+        if(this.head.value === item){
             this.head = this.head.next;
             return;
         }
-        let tempNode = this.head;
-        while ((tempNode.next !== null) && (tempNode.next.value !== item)) {
-            tempNode = tempNode.next;
+        //start at the head
+        let currNode = this.head;
+        //keep track of previous
+        let previousNode = this.head;
+        while ((currNode !== null) && (currNode.value !== item)) {
+            //save the previous node 
+            previousNode = currNode;
+            currNode = currNode.next;
         }
-        if (tempNode.next === null) {
-            console.log(`${item} not found`);
+        if(currNode === null){
+            console.log('Item not found');
             return;
         }
-      
-        tempNode.next = tempNode.next.next;
-        return;
+        previousNode.next = currNode.next;
     }
-    find(item) {
-        //start at the head of LL
+    find(item) { //get
+        //start at the head
         let currNode = this.head;
-
-        //If the LL is empty, return null
-        if(!this.head) {
+        //if the list is empty
+        if (!this.head){
             return null;
         }
-
-        //loop through nodes in LL
-        while(currNode.value.original !== item) {
-            //check if at the end of the list, if so return null
-            if(currNode.next === null) {
+        while(currNode.value !== item) {
+            //return null if end of the list 
+            // and the item is not on the list
+            if (currNode.next === null) {
                 return null;
             }
             else {
-                //otherwise update to next node
+                //keep looking 
                 currNode = currNode.next;
             }
         }
-
+        //found it
         return currNode;
-    }
-    log() {
-        let tempNode=this.head;
-        while (tempNode !== null) {
-            console.log(tempNode.value);
-            tempNode=tempNode.next;
-        }
     }
 }
 
 module.exports = LinkedList;
+
+function displayList(list){
+    let currNode = list.head;
+    while (currNode !== null) {
+        console.log(currNode.value);
+        currNode = currNode.next;
+    }
+}
+
+function size(lst){
+    let counter = 0;
+    let currNode = lst.head;
+    if(!currNode){
+        return counter;
+    }
+    else
+        counter++;
+    while (!(currNode.next === null)) {
+        counter++;
+        currNode = currNode.next;
+    }
+    return counter;
+}
+
+function isEmpty(lst){
+    let currNode = lst.head;
+    if(!currNode){
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+function findPrevious(lst, item) {
+    let currNode = lst.head;
+    while ((currNode !== null) && (currNode.next.value !== item)) {
+        currNode = currNode.next;
+    }
+    return currNode;
+}
+
+function findLast(lst){
+    if(lst.head === null){
+        return 'list is empty';
+    } 
+    let tempNode = lst.head;
+    while(tempNode.next !== null){
+        tempNode = tempNode.next;
+    }
+    return tempNode;
+}
+
+

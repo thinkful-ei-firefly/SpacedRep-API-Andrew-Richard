@@ -1,5 +1,12 @@
 # Spaced repetition API!
 
+## todo
+
+When creating a new user
+    generate a new language in db table language
+    generate new words in db table words
+
+
 ## Local dev setup
 
 If using user `dunder-mifflin`:

@@ -1,7 +1,5 @@
 'use strict';
 
-const LinkedList = require('./linkedList');
-
 const LanguageService = {
     getUsersLanguage(db, user_id) {
         return db
@@ -21,48 +19,68 @@ const LanguageService = {
             .from('word')
             .select(
                 'id',
-                'language_id',
                 'original',
                 'translation',
-                'next',
                 'memory_value',
                 'correct_count',
-                'incorrect_count'
+                'incorrect_count',
+                'language_id',
+                'next'
             )
             .where({ language_id });
     },
-    getNextWord(db) {
+    getWordById(db, id) {
         return db
             .from('word')
             .select('*')
-            .limit(1);
+            .where({ id });
     },
-    update(db, id, fields) {
+    getTotalScore(db, id) {
         return db
+            .from('language')
+            .select('total_score')
+            .where({ id })
+            .then(([language]) => 
+                language.total_score
+            );
+    },
+    updateTotalScore(db, id, fields) {
+        return db('language')
             .where({ id })
             .update(fields)
+            .returning('*')
+            .then(([score]) => 
+                score.total_score);
     },
-    getTotalScore(allWords) {
-        allWords
-        .reduce((acc, score) => {
-          return acc + score.correct_count
-      }, 0)
+    updateWord(db, id, fields) {
+        // console.log('____Update____');
+        // console.log(id, fields);
+        return db('word')
+            .where({ id })
+            .update(fields)
+            .then(() => 
+                LanguageService.getWordById(db, id)
+            )
+            .then(([ word ]) => word);
     },
-    populateLinkedList(wordsArr) {
-        let wordsList = new LinkedList();
-        return wordsArr.forEach(word => 
-            wordsList.insertLast(word)
-        );
+    updateHead(db, id, user_id, fields) {
+        return db('language')
+            .where({ id })
+            .update(fields)
+            .then(() => 
+                LanguageService.getUsersLanguage(db, user_id)
+            )
+            .then(language => language);
     },
-    getLength = (list) => {
-        let counter = 0;
+    getLength(list) {
+        let counter = 1;
         let tempNode=list.head;
         while (tempNode !== null) {
             counter++;
             tempNode=tempNode.next;
         }
         return counter;
-    };
+    },
 };
     
 module.exports = LanguageService;

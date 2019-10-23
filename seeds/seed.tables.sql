@@ -25,7 +25,7 @@ VALUES
   (2, 1, 'No', 'No', 3),
   (3, 1, 'Per favore', 'Please', 4),
   (4, 1, 'Grazie',	'Thank you', 5),
-  (5, 1, 'Prego', 'You’re welcome', 6),
+  (5, 1, 'Prego', "You're welcome", 6),
   (6, 1, 'Ciao', 'Hello', 7),
   (7, 1, 'Amico', 'Friend', 8),
   (8, 1, 'Mi scusi', 'Excuse me', 9),

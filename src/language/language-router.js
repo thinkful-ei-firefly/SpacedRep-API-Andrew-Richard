@@ -69,7 +69,8 @@ languageRouter
                 "nextWord": word.original,
                 "wordCorrectCount": word.correct_count,
                 "wordIncorrectCount": word.incorrect_count,
-                "totalScore": language.total_score
+                "totalScore": language.total_score,
+                "wordObj": word
             })
 
         }
@@ -82,8 +83,12 @@ languageRouter
     .post('/guess', jsonBodyParser, async (req, res, next) => {
         try {
             // validate req body
-            //console.log('-----------------------/api/language/guess/-----------------------');
+            console.log('-----------------------/api/language/guess/-----------------------');
             const { currWord, guess } = req.body;
+            console.log(`
+            currWord: ${currWord}, 
+            guess: ${guess}
+            `)
 
             if(!currWord) {
                 return res
@@ -114,7 +119,8 @@ languageRouter
 
             const currHead = language.head;
             let totalScore = language.total_score;
-            console.log(`current head's id: ${currHead}`);
+            console.log('current language')
+            console.log(language);
 
             const wordsList = await makeLinkedList(
                 req.app.get('db'),
@@ -129,7 +135,8 @@ languageRouter
                 req.language.id,
                 { head: wordsList.head.value.next }
             )
-            // console.log(newLanguage);
+            console.log('new language objext')
+            console.log(newLanguage);
 
             // remove current head from linked list
             let word = wordsList.head.value;
@@ -156,7 +163,16 @@ languageRouter
               incorrect_count ++;
             }
 
-            console.log(guess, answer, isCorrect, memory_value, correct_count, incorrect_count, totalScore);
+            console.log(`
+                word: ${currWord},
+                guess: ${guess}, 
+                answer: ${answer},
+                isCorrect: ${isCorrect},
+                memory_value: ${memory_value},
+                correct_count: ${correct_count}, 
+                incorrect_count: ${incorrect_count},
+                totalScore: ${totalScore}
+                `);
 
             // update totalScore
             totalScore = await LanguageService.updateTotalScore(

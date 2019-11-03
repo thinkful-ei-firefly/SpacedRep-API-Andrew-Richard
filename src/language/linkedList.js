@@ -54,7 +54,6 @@ class LinkedList {
             currNode = currNode.next;
         }
         if(currNode === null){
-            console.log('Node not found to insert');
             return;
         }
         //insert between current and previous
@@ -101,7 +100,6 @@ class LinkedList {
             currNode = currNode.next;
         }
         if(currNode === null){
-            console.log('Item not found');
             return;
         }
         previousNode.next = currNode.next;
@@ -134,7 +132,6 @@ module.exports = LinkedList;
 function displayList(list){
     let currNode = list.head;
     while (currNode !== null) {
-        console.log(currNode.value);
         currNode = currNode.next;
     }
 }

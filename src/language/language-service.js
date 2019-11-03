@@ -53,8 +53,6 @@ const LanguageService = {
                 score.total_score);
     },
     updateWord(db, id, fields) {
-        // console.log('____Update____');
-        // console.log(id, fields);
         return db('word')
             .where({ id })
             .update(fields)

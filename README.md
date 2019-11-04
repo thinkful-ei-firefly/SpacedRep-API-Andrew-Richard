@@ -1,10 +1,20 @@
 # Spaced repetition API!
 
-## todo
+## Endpoints
 
-When creating a new user
-    generate a new language in db table language
-    generate new words in db table words
+### Auth Router /api/auth
+
+#### POST /token
+
+Requires username, password for a user that already exists. If the username and password match, it returns an auth token to the user.
+
+#### PUT /token
+
+Used to refresh the auth token. Does not take a username and password, it recieves the user id and username from req.user not req.body.
+
+### Language Router /api/language
+
+### User Router /api/user
 
 
 ## Local dev setup

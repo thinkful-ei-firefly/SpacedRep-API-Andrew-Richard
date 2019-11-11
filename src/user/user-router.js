@@ -17,7 +17,7 @@ userRouter
 
     try {
       const passwordError = UserService.validatePassword(password)
-
+      console.log(passwordError)
       if (passwordError)
         return res.status(400).json({ error: passwordError })
 
